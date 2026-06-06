@@ -56,7 +56,7 @@ canvas{max-height:180px}
         <th>전일대비</th>
       </tr>
     </thead>
-                <tbody>
+                    <tbody>
       
       <tr>
         <td class="lbl">코스피</td>
@@ -131,8 +131,8 @@ canvas{max-height:180px}
       <tr>
         <td class="lbl">비트코인</td>
         <td class="num">63,407<small>$</small></td>
-        <td class="num">61,050<small>$</small></td>
-        <td class="chg"><span style="color:#3b82f6">▼ 3.72%</span></td>
+        <td class="num">60,795<small>$</small></td>
+        <td class="chg"><span style="color:#3b82f6">▼ 4.12%</span></td>
       </tr>
       
       <tr>
@@ -309,7 +309,7 @@ new Chart(document.getElementById('c_gold'), {
 
 new Chart(document.getElementById('c_btc'), {
   type:'line',
-  data:{labels:["05-06", "05-07", "05-08", "05-11", "05-12", "05-13", "05-14", "05-15", "05-18", "05-19", "05-20", "05-21", "05-22", "05-26", "05-27", "05-28", "05-29", "06-01", "06-02", "06-04", "06-05", "06-06"],datasets:[{label:'비트코인',data:[81428,80010,80187,81728,80477,79277,81051,79066,76954,76751,77458,77539,75488,75826,74345,73537,73373,71320,66704,66704,63407,61050],borderColor:'#f59e0b',backgroundColor:'#f59e0b18',borderWidth:2,pointRadius:2,pointHoverRadius:5,tension:0.3,fill:true}]},
+  data:{labels:["05-06", "05-07", "05-08", "05-11", "05-12", "05-13", "05-14", "05-15", "05-18", "05-19", "05-20", "05-21", "05-22", "05-26", "05-27", "05-28", "05-29", "06-01", "06-02", "06-04", "06-05", "06-06"],datasets:[{label:'비트코인',data:[81428,80010,80187,81728,80477,79277,81051,79066,76954,76751,77458,77539,75488,75826,74345,73537,73373,71320,66704,66704,63407,60795],borderColor:'#f59e0b',backgroundColor:'#f59e0b18',borderWidth:2,pointRadius:2,pointHoverRadius:5,tension:0.3,fill:true}]},
   options:{
     responsive:true,
     plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`달러: ${ctx.parsed.y?.toLocaleString()??'-'}`}}},
