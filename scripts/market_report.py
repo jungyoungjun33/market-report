@@ -156,68 +156,61 @@ def add_notion_record():
         print("⚠️ NOTION_TOKEN 없음, 노션 기록 건너뜀")
         return
 
-    def num(v):
-        return {"number": round(v, 4)} if v is not None else None
+    # DB schema: 구분(title), date(date), close(number), volume(number), 텍스트(rich_text), 비고(rich_text)
+    rows = [
+        ("코스피",    kospi,   kospi_vol,  f"{kospi_chg:+.2f}" if kospi_chg is not None else ""),
+        ("코스닥",    kosdaq,  kosdaq_vol, f"{kosdaq_chg:+.2f}" if kosdaq_chg is not None else ""),
+        ("S&P500",   sp500,   None,       f"{sp500_chg:+.2f}" if sp500_chg is not None else ""),
+        ("나스닥",    nasdaq,  None,       f"{nasdaq_chg:+.2f}" if nasdaq_chg is not None else ""),
+        ("상하이",    shanghai,None,       f"{sh_chg:+.2f}" if sh_chg is not None else ""),
+        ("DAX",      dax,     None,       f"{dax_chg:+.2f}" if dax_chg is not None else ""),
+        ("WTI",      wti,     None,       ""),
+        ("Gold",     gold,    None,       ""),
+        ("비트코인",  btc,     None,       ""),
+        ("VIX",      vix,     None,       ""),
+        ("원달러",    usd_krw, None,       ""),
+        ("달러인덱스", dxy,    None,       ""),
+        ("美10년물",  us10y,   None,       ""),
+        ("美30년물",  us30y,   None,       ""),
+    ]
 
-    def sel(chg):
-        return {"select": {"name": "▲상승" if chg is not None and chg > 0 else "▼하락"}}
+    def post_row(name, close_v, vol_v, chg_txt):
+        props = {
+            "구분": {"title": [{"text": {"content": name}}]},
+            "date": {"date": {"start": TODAY_FULL}},
+        }
+        if close_v is not None:
+            props["close"] = {"number": round(close_v, 4)}
+        if vol_v is not None:
+            props["volume"] = {"number": round(vol_v, 4)}
+        if chg_txt:
+            props["텍스트"] = {"rich_text": [{"text": {"content": chg_txt}}]}
 
-    def txt(s):
-        return {"rich_text": [{"text": {"content": s}}]} if s else None
-
-    props = {
-        "날짜":          {"title": [{"text": {"content": TODAY_FULL}}]},
-        "날짜_dt":       {"date": {"start": TODAY_FULL}},
-        "코스피":         num(kospi),
-        "코스피_방향":     sel(kospi_chg),
-        "코스피_등락":     num(kospi_chg),
-        "코스피_거래대금":  txt(vol_str(kospi_vol)),
-        "코스닥":         num(kosdaq),
-        "코스닥_방향":     sel(kosdaq_chg),
-        "코스닥_등락":     num(kosdaq_chg),
-        "코스닥_거래대금":  txt(vol_str(kosdaq_vol)),
-        "S&P500":       num(sp500),
-        "S&P500_등락":   num(sp500_chg),
-        "나스닥":         num(nasdaq),
-        "나스닥_등락":     num(nasdaq_chg),
-        "상하이":         num(shanghai),
-        "상하이_등락":     num(sh_chg),
-        "DAX":          num(dax),
-        "DAX_등락":      num(dax_chg),
-        "WTI":          num(wti),
-        "Gold":         num(gold),
-        "비트코인":        num(btc),
-        "VIX":          num(vix),
-        "원달러":         num(usd_krw),
-        "달러인덱스":      num(dxy),
-        "美10년물금리":    num(us10y),
-        "美30년물금리":    num(us30y),
-        "기록일시":        txt(KST_NOW.strftime('%Y-%m-%d %H:%M') + ' KST'),
-    }
-    # None 제거
-    props = {k: v for k, v in props.items() if v is not None}
-
-    payload = json.dumps({
-        "parent": {"database_id": NOTION_DB_ID},
-        "properties": props
-    }).encode()
-
-    req = urllib.request.Request(
-        "https://api.notion.com/v1/pages",
-        data=payload,
-        headers={
-            "Authorization": f"Bearer {NOTION_TOKEN}",
-            "Content-Type": "application/json",
-            "Notion-Version": "2022-06-28",
-        },
-        method="POST"
-    )
-    try:
+        payload = json.dumps({"parent": {"database_id": NOTION_DB_ID}, "properties": props}).encode()
+        req = urllib.request.Request(
+            "https://api.notion.com/v1/pages",
+            data=payload,
+            headers={
+                "Authorization": f"Bearer {NOTION_TOKEN}",
+                "Content-Type": "application/json",
+                "Notion-Version": "2022-06-28",
+            },
+            method="POST"
+        )
         with urllib.request.urlopen(req, timeout=15) as r:
-            json.loads(r.read().decode())
-        print("✅ 노션 기록 완료")
-    except Exception as e:
-        print(f"⚠️ 노션 기록 실패: {e}")
+            r.read()
+
+    errors = []
+    for row in rows:
+        try:
+            post_row(*row)
+        except Exception as e:
+            errors.append(f"{row[0]}: {e}")
+
+    if errors:
+        print(f"⚠️ 노션 기록 일부 실패: {errors}")
+    else:
+        print(f"✅ 노션 기록 완료 ({len(rows)}개 항목)")
 
 
 def update_dashboard(chart_values):
