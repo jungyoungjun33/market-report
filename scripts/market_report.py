@@ -9,7 +9,7 @@ import requests
 
 TELEGRAM_BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
 TELEGRAM_CHAT_ID   = os.environ["TELEGRAM_CHAT_ID"]
-DASHBOARD_URL      = "https://neon-liger-ccc963.netlify.app/"
+DASHBOARD_URL      = "https://splendorous-empanada-694d4e.netlify.app/"
 
 KST_NOW     = datetime.datetime.utcnow() + datetime.timedelta(hours=9)
 WEEKDAY_KOR = {"Mon":"월","Tue":"화","Wed":"수","Thu":"목","Fri":"금","Sat":"토","Sun":"일"}
