@@ -9,10 +9,13 @@ import requests
 
 TELEGRAM_BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
 TELEGRAM_CHAT_ID   = os.environ["TELEGRAM_CHAT_ID"]
+DASHBOARD_URL      = "https://neon-liger-ccc963.netlify.app/"
 
 KST_NOW = datetime.datetime.utcnow() + datetime.timedelta(hours=9)
 WEEKDAY_KOR = {"Mon":"월","Tue":"화","Wed":"수","Thu":"목","Fri":"금","Sat":"토","Sun":"일"}
 TODAY = KST_NOW.strftime(f"%Y년 %m월 %d일 ({WEEKDAY_KOR.get(KST_NOW.strftime('%a'), '')})")
+TODAY_LABEL = KST_NOW.strftime("%m-%d")
+TODAY_FULL  = KST_NOW.strftime("%Y-%m-%d")
 
 def send_telegram(text: str):
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
@@ -47,6 +50,93 @@ def fetch_kr_market(index_code: str):
     except Exception:
         return "-"
 
+def parse_vol(s):
+    m = re.search(r'[\d.]+', s)
+    return float(m.group()) if m else None
+
+def fmt_val(v):
+    if v is None:
+        return 'null'
+    if v == int(v) and abs(v) < 1e9:
+        return str(int(v))
+    return f'{v:.4f}'.rstrip('0').rstrip('.')
+
+def update_dashboard(chart_values):
+    html_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'index.html')
+    with open(html_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+
+    # Parse current labels from first occurrence
+    labels_m = re.search(r'labels:\s*(\["[^"]*"(?:,\s*"[^"]*")*\])', content)
+    if not labels_m:
+        print("⚠️ labels 파싱 실패")
+        return
+
+    labels = json.loads(labels_m.group(1))
+    already_exists = TODAY_LABEL in labels
+
+    if not already_exists:
+        labels.append(TODAY_LABEL)
+        labels = labels[-30:]
+
+    new_labels_json = json.dumps(labels)
+    # Replace all occurrences (all charts share same labels)
+    content = content.replace(labels_m.group(1), new_labels_json)
+
+    # Update subtitle date range
+    year = KST_NOW.strftime("%Y")
+    first_date = f"{year}-{labels[0]}"
+    content = re.sub(
+        r'\d{4}-\d{2}-\d{2} ~ \d{4}-\d{2}-\d{2}',
+        f'{first_date} ~ {TODAY_FULL}',
+        content
+    )
+
+    # Update each chart's data array
+    def update_block(block, new_val):
+        if new_val is None:
+            return block
+
+        def replacer(m):
+            tokens = [t.strip() for t in m.group(2).split(',') if t.strip()]
+            vals = []
+            for t in tokens:
+                if t == 'null':
+                    vals.append(None)
+                else:
+                    try:
+                        vals.append(float(t))
+                    except ValueError:
+                        pass
+
+            if already_exists:
+                if vals:
+                    vals[-1] = new_val
+            else:
+                vals.append(new_val)
+                vals = vals[-30:]
+
+            return m.group(1) + ','.join(fmt_val(v) for v in vals) + m.group(3)
+
+        return re.sub(r"(label:'[^']*',data:\[)(.*?)(\])", replacer, block)
+
+    # Split by chart blocks and process each
+    parts = re.split(r'(?=new Chart\()', content)
+    result = [parts[0]]
+    for part in parts[1:]:
+        id_m = re.search(r"getElementById\('([^']+)'\)", part)
+        if id_m and id_m.group(1) in chart_values:
+            part = update_block(part, chart_values[id_m.group(1)])
+        result.append(part)
+
+    content = ''.join(result)
+
+    with open(html_path, 'w', encoding='utf-8') as f:
+        f.write(content)
+
+    print(f"✅ 대시보드 업데이트 완료 ({TODAY_LABEL})")
+
+
 print("📡 데이터 수집 중...")
 kospi_vol_str  = fetch_kr_market("KOSPI")
 kosdaq_vol_str = fetch_kr_market("KOSDAQ")
@@ -64,6 +154,25 @@ usd_krw,  usdkrw_chg   = fetch_yf("KRW=X")
 dxy,      dxy_chg      = fetch_yf("DX-Y.NYB")
 us10y,    us10y_chg    = fetch_yf("^TNX")
 us30y,    us30y_chg    = fetch_yf("^TYX")
+
+update_dashboard({
+    'c_kospi':  kospi,
+    'c_kosdaq': kosdaq,
+    'c_kpvol':  parse_vol(kospi_vol_str),
+    'c_kqvol':  parse_vol(kosdaq_vol_str),
+    'c_sp500':  sp500,
+    'c_nasdaq': nasdaq,
+    'c_sh':     shanghai,
+    'c_dax':    dax,
+    'c_wti':    wti,
+    'c_gold':   gold,
+    'c_btc':    btc,
+    'c_vix':    vix,
+    'c_usd':    usd_krw,
+    'c_dxy':    dxy,
+    'c_us10':   us10y,
+    'c_us30':   us30y,
+})
 
 def fv(val, dec=2):
     return f"{val:,.{dec}f}" if val is not None else "-"
@@ -101,7 +210,7 @@ lines = [
     f"  {'美 30년물(%)':<17} {fv(us30y,3):>11}  {arrow(us30y_chg)} {fc(us30y_chg):>8}",
     SEP,
     f"  ※ 기준: 전일 종가  |  생성: {KST_NOW.strftime('%Y-%m-%d %H:%M')} KST",
-    f"\n📈 대시보드: https://neon-liger-ccc963.netlify.app/",
+    f"\n📈 대시보드: {DASHBOARD_URL}",
 ]
 report = "\n".join(lines)
 print(report)
