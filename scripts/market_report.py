@@ -10,7 +10,7 @@ import requests
 TELEGRAM_BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
 TELEGRAM_CHAT_ID   = os.environ["TELEGRAM_CHAT_ID"]
 NOTION_TOKEN       = os.environ.get("NOTION_TOKEN", "")
-NOTION_DB_ID       = "f34e32797ea04b11b36a8f980ea47c9b"
+NOTION_DB_ID       = "20c7496cf62681049680ed1011c3b68b"
 DASHBOARD_URL      = "https://splendorous-empanada-694d4e.netlify.app/"
 NOTION_URL         = "https://app.notion.com/p/f34e32797ea04b11b36a8f980ea47c9b?v=0638c042b6cf41d78f3c24d0fa0e9adc"
 
