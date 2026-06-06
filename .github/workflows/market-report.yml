@@ -23,6 +23,7 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
         run: python scripts/market_report.py
       - name: Commit updated dashboard
         run: |

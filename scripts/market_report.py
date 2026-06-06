@@ -9,7 +9,10 @@ import requests
 
 TELEGRAM_BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
 TELEGRAM_CHAT_ID   = os.environ["TELEGRAM_CHAT_ID"]
+NOTION_TOKEN       = os.environ.get("NOTION_TOKEN", "")
+NOTION_DB_ID       = "f34e32797ea04b11b36a8f980ea47c9b"
 DASHBOARD_URL      = "https://splendorous-empanada-694d4e.netlify.app/"
+NOTION_URL         = "https://app.notion.com/p/f34e32797ea04b11b36a8f980ea47c9b?v=0638c042b6cf41d78f3c24d0fa0e9adc"
 
 KST_NOW     = datetime.datetime.utcnow() + datetime.timedelta(hours=9)
 WEEKDAY_KOR = {"Mon":"월","Tue":"화","Wed":"수","Thu":"목","Fri":"금","Sat":"토","Sun":"일"}
@@ -145,6 +148,75 @@ def build_table_row(label, prev_v, today_v, unit, dec):
     )
 
 
+def add_notion_record():
+    if not NOTION_TOKEN:
+        print("⚠️ NOTION_TOKEN 없음, 노션 기록 건너뜀")
+        return
+
+    def num(v):
+        return {"number": round(v, 4)} if v is not None else None
+
+    def sel(chg):
+        return {"select": {"name": "▲상승" if chg is not None and chg > 0 else "▼하락"}}
+
+    def txt(s):
+        return {"rich_text": [{"text": {"content": s}}]} if s else None
+
+    props = {
+        "날짜":          {"title": [{"text": {"content": TODAY_FULL}}]},
+        "날짜_dt":       {"date": {"start": TODAY_FULL}},
+        "코스피":         num(kospi),
+        "코스피_방향":     sel(kospi_chg),
+        "코스피_등락":     num(kospi_chg),
+        "코스피_거래대금":  txt(vol_str(kospi_vol)),
+        "코스닥":         num(kosdaq),
+        "코스닥_방향":     sel(kosdaq_chg),
+        "코스닥_등락":     num(kosdaq_chg),
+        "코스닥_거래대금":  txt(vol_str(kosdaq_vol)),
+        "S&P500":       num(sp500),
+        "S&P500_등락":   num(sp500_chg),
+        "나스닥":         num(nasdaq),
+        "나스닥_등락":     num(nasdaq_chg),
+        "상하이":         num(shanghai),
+        "상하이_등락":     num(sh_chg),
+        "DAX":          num(dax),
+        "DAX_등락":      num(dax_chg),
+        "WTI":          num(wti),
+        "Gold":         num(gold),
+        "비트코인":        num(btc),
+        "VIX":          num(vix),
+        "원달러":         num(usd_krw),
+        "달러인덱스":      num(dxy),
+        "美10년물금리":    num(us10y),
+        "美30년물금리":    num(us30y),
+        "기록일시":        txt(KST_NOW.strftime('%Y-%m-%d %H:%M') + ' KST'),
+    }
+    # None 제거
+    props = {k: v for k, v in props.items() if v is not None}
+
+    payload = json.dumps({
+        "parent": {"database_id": NOTION_DB_ID},
+        "properties": props
+    }).encode()
+
+    req = urllib.request.Request(
+        "https://api.notion.com/v1/pages",
+        data=payload,
+        headers={
+            "Authorization": f"Bearer {NOTION_TOKEN}",
+            "Content-Type": "application/json",
+            "Notion-Version": "2022-06-28",
+        },
+        method="POST"
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=15) as r:
+            json.loads(r.read().decode())
+        print("✅ 노션 기록 완료")
+    except Exception as e:
+        print(f"⚠️ 노션 기록 실패: {e}")
+
+
 def update_dashboard(chart_values):
     html_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'index.html')
     with open(html_path, 'r', encoding='utf-8') as f:
@@ -252,6 +324,7 @@ us30_prev,   us30y,   us30y_chg  = fetch_yf("^TYX")
 kospi_vol  = fetch_kr_market("KOSPI")
 kosdaq_vol = fetch_kr_market("KOSDAQ")
 
+add_notion_record()
 update_dashboard({
     'c_kospi':  kospi,
     'c_kosdaq': kosdaq,
@@ -303,6 +376,7 @@ lines = [
     SEP,
     f"  ※ 기준: 전일 종가  |  생성: {KST_NOW.strftime('%Y-%m-%d %H:%M')} KST",
     f"\n📈 대시보드: {DASHBOARD_URL}",
+    f"📋 노션 기록: {NOTION_URL}",
 ]
 report = "\n".join(lines)
 print(report)
