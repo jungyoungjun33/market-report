@@ -14,6 +14,9 @@ NOTION_DB_ID       = "20c7496cf62681049680ed1011c3b68b"
 DASHBOARD_URL      = "https://splendorous-empanada-694d4e.netlify.app/"
 NOTION_URL         = "https://app.notion.com/p/f34e32797ea04b11b36a8f980ea47c9b?v=0638c042b6cf41d78f3c24d0fa0e9adc"
 
+def vol_str(v):
+    return f"{v:.3f}조" if v is not None else "-"
+
 KST_NOW     = datetime.datetime.utcnow() + datetime.timedelta(hours=9)
 WEEKDAY_KOR = {"Mon":"월","Tue":"화","Wed":"수","Thu":"목","Fri":"금","Sat":"토","Sun":"일"}
 TODAY       = KST_NOW.strftime(f"%Y년 %m월 %d일 ({WEEKDAY_KOR.get(KST_NOW.strftime('%a'), '')})")
@@ -345,9 +348,6 @@ update_dashboard({
 })
 
 # ── 텔레그램 리포트 ──────────────────────────────────────────
-def vol_str(v):
-    return f"{v:.3f}조" if v is not None else "-"
-
 SEP = "─" * 52
 lines = [
     f"\n{'='*52}",
