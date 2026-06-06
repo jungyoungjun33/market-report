@@ -56,7 +56,7 @@ canvas{max-height:180px}
         <th>전일대비</th>
       </tr>
     </thead>
-        <tbody>
+            <tbody>
       
       <tr>
         <td class="lbl">코스피</td>
@@ -117,22 +117,22 @@ canvas{max-height:180px}
       <tr>
         <td class="lbl">WTI</td>
         <td class="num">93.04<small>$</small></td>
-        <td class="num">90.25<small>$</small></td>
-        <td class="chg"><span style="color:#3b82f6">▼ 3.00%</span></td>
+        <td class="num">90.54<small>$</small></td>
+        <td class="chg"><span style="color:#3b82f6">▼ 2.69%</span></td>
       </tr>
       
       <tr>
         <td class="lbl">Gold</td>
         <td class="num">4,472.00<small>$</small></td>
-        <td class="num">4,353.90<small>$</small></td>
-        <td class="chg"><span style="color:#3b82f6">▼ 2.64%</span></td>
+        <td class="num">4,337.10<small>$</small></td>
+        <td class="chg"><span style="color:#3b82f6">▼ 3.02%</span></td>
       </tr>
       
       <tr>
         <td class="lbl">비트코인</td>
         <td class="num">63,407<small>$</small></td>
-        <td class="num">60,690<small>$</small></td>
-        <td class="chg"><span style="color:#3b82f6">▼ 4.28%</span></td>
+        <td class="num">59,941<small>$</small></td>
+        <td class="chg"><span style="color:#3b82f6">▼ 5.47%</span></td>
       </tr>
       
       <tr>
@@ -152,7 +152,7 @@ canvas{max-height:180px}
       <tr>
         <td class="lbl">달러인덱스</td>
         <td class="num">99.402<small></small></td>
-        <td class="num">100.071<small></small></td>
+        <td class="num">100.070<small></small></td>
         <td class="chg"><span style="color:#ef4444">▲ 0.67%</span></td>
       </tr>
       
@@ -244,7 +244,7 @@ new Chart(document.getElementById('c_sp500'), {
 
 new Chart(document.getElementById('c_nasdaq'), {
   type:'line',
-  data:{labels:["05-06", "05-07", "05-08", "05-11", "05-12", "05-13", "05-14", "05-15", "05-18", "05-19", "05-20", "05-21", "05-22", "05-26", "05-27", "05-28", "05-29", "06-01", "06-02", "06-04", "06-05", "06-06"],datasets:[{label:'나스닥',data:[25838.94,25806.2,26247.08,26274.13,26088.2,26402.34,26635.22,26225.14,26090.73,25870.71,26270.36,26293.1,26343.97,26656.18,26674.73,26917.47,26972.62,27086.81,27093.9,27093.9,26853.98,25709.4316],borderColor:'#ef4444',backgroundColor:'#ef444418',borderWidth:2,pointRadius:2,pointHoverRadius:5,tension:0.3,fill:true}]},
+  data:{labels:["05-06", "05-07", "05-08", "05-11", "05-12", "05-13", "05-14", "05-15", "05-18", "05-19", "05-20", "05-21", "05-22", "05-26", "05-27", "05-28", "05-29", "06-01", "06-02", "06-04", "06-05", "06-06"],datasets:[{label:'나스닥',data:[25838.94,25806.2,26247.08,26274.13,26088.2,26402.34,26635.22,26225.14,26090.73,25870.71,26270.36,26293.1,26343.97,26656.18,26674.73,26917.47,26972.62,27086.81,27093.9,27093.9,26853.98,25709.4297],borderColor:'#ef4444',backgroundColor:'#ef444418',borderWidth:2,pointRadius:2,pointHoverRadius:5,tension:0.3,fill:true}]},
   options:{
     responsive:true,
     plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`포인트: ${ctx.parsed.y?.toLocaleString()??'-'}`}}},
@@ -283,7 +283,7 @@ new Chart(document.getElementById('c_dax'), {
 
 new Chart(document.getElementById('c_wti'), {
   type:'line',
-  data:{labels:["05-06", "05-07", "05-08", "05-11", "05-12", "05-13", "05-14", "05-15", "05-18", "05-19", "05-20", "05-21", "05-22", "05-26", "05-27", "05-28", "05-29", "06-01", "06-02", "06-04", "06-05", "06-06"],datasets:[{label:'WTI ($/bbl)',data:[95.08,94.81,95.42,98.07,102.18,101.02,101.17,105.42,108.66,107.77,98.26,96.35,96.6,93.89,88.68,88.9,87.36,92.16,93.76,93.76,93.04,90.25],borderColor:'#f97316',backgroundColor:'#f9731618',borderWidth:2,pointRadius:2,pointHoverRadius:5,tension:0.3,fill:true}]},
+  data:{labels:["05-06", "05-07", "05-08", "05-11", "05-12", "05-13", "05-14", "05-15", "05-18", "05-19", "05-20", "05-21", "05-22", "05-26", "05-27", "05-28", "05-29", "06-01", "06-02", "06-04", "06-05", "06-06"],datasets:[{label:'WTI ($/bbl)',data:[95.08,94.81,95.42,98.07,102.18,101.02,101.17,105.42,108.66,107.77,98.26,96.35,96.6,93.89,88.68,88.9,87.36,92.16,93.76,93.76,93.04,90.54],borderColor:'#f97316',backgroundColor:'#f9731618',borderWidth:2,pointRadius:2,pointHoverRadius:5,tension:0.3,fill:true}]},
   options:{
     responsive:true,
     plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`달러: ${ctx.parsed.y?.toLocaleString()??'-'}`}}},
@@ -296,7 +296,7 @@ new Chart(document.getElementById('c_wti'), {
 
 new Chart(document.getElementById('c_gold'), {
   type:'line',
-  data:{labels:["05-06", "05-07", "05-08", "05-11", "05-12", "05-13", "05-14", "05-15", "05-18", "05-19", "05-20", "05-21", "05-22", "05-26", "05-27", "05-28", "05-29", "06-01", "06-02", "06-04", "06-05", "06-06"],datasets:[{label:'Gold ($/oz)',data:[4681.9,4699.8,4720.4,4718.7,4677.6,4697.7,4678.1,4555.8,4552.5,4506.3,4531.3,4539.8,4521,4500.4,4447.5,4499.3,4560.5,4475.2,4489.1,4489.1,4472,4353.8999],borderColor:'#fbbf24',backgroundColor:'#fbbf2418',borderWidth:2,pointRadius:2,pointHoverRadius:5,tension:0.3,fill:true}]},
+  data:{labels:["05-06", "05-07", "05-08", "05-11", "05-12", "05-13", "05-14", "05-15", "05-18", "05-19", "05-20", "05-21", "05-22", "05-26", "05-27", "05-28", "05-29", "06-01", "06-02", "06-04", "06-05", "06-06"],datasets:[{label:'Gold ($/oz)',data:[4681.9,4699.8,4720.4,4718.7,4677.6,4697.7,4678.1,4555.8,4552.5,4506.3,4531.3,4539.8,4521,4500.4,4447.5,4499.3,4560.5,4475.2,4489.1,4489.1,4472,4337.1001],borderColor:'#fbbf24',backgroundColor:'#fbbf2418',borderWidth:2,pointRadius:2,pointHoverRadius:5,tension:0.3,fill:true}]},
   options:{
     responsive:true,
     plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`달러: ${ctx.parsed.y?.toLocaleString()??'-'}`}}},
@@ -309,7 +309,7 @@ new Chart(document.getElementById('c_gold'), {
 
 new Chart(document.getElementById('c_btc'), {
   type:'line',
-  data:{labels:["05-06", "05-07", "05-08", "05-11", "05-12", "05-13", "05-14", "05-15", "05-18", "05-19", "05-20", "05-21", "05-22", "05-26", "05-27", "05-28", "05-29", "06-01", "06-02", "06-04", "06-05", "06-06"],datasets:[{label:'비트코인',data:[81428,80010,80187,81728,80477,79277,81051,79066,76954,76751,77458,77539,75488,75826,74345,73537,73373,71320,66704,66704,63407,60690.3789],borderColor:'#f59e0b',backgroundColor:'#f59e0b18',borderWidth:2,pointRadius:2,pointHoverRadius:5,tension:0.3,fill:true}]},
+  data:{labels:["05-06", "05-07", "05-08", "05-11", "05-12", "05-13", "05-14", "05-15", "05-18", "05-19", "05-20", "05-21", "05-22", "05-26", "05-27", "05-28", "05-29", "06-01", "06-02", "06-04", "06-05", "06-06"],datasets:[{label:'비트코인',data:[81428,80010,80187,81728,80477,79277,81051,79066,76954,76751,77458,77539,75488,75826,74345,73537,73373,71320,66704,66704,63407,59940.9609],borderColor:'#f59e0b',backgroundColor:'#f59e0b18',borderWidth:2,pointRadius:2,pointHoverRadius:5,tension:0.3,fill:true}]},
   options:{
     responsive:true,
     plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`달러: ${ctx.parsed.y?.toLocaleString()??'-'}`}}},
@@ -348,7 +348,7 @@ new Chart(document.getElementById('c_usd'), {
 
 new Chart(document.getElementById('c_dxy'), {
   type:'line',
-  data:{labels:["05-06", "05-07", "05-08", "05-11", "05-12", "05-13", "05-14", "05-15", "05-18", "05-19", "05-20", "05-21", "05-22", "05-26", "05-27", "05-28", "05-29", "06-01", "06-02", "06-04", "06-05", "06-06"],datasets:[{label:'달러인덱스',data:[98.02,98.25,97.84,97.94,98.29,98.48,98.88,99.27,98.97,99.3,99.11,99.19,99.32,99.17,99.21,99.02,98.91,99.2,99.22,99.22,99.402,100.071],borderColor:'#a78bfa',backgroundColor:'#a78bfa18',borderWidth:2,pointRadius:2,pointHoverRadius:5,tension:0.3,fill:true}]},
+  data:{labels:["05-06", "05-07", "05-08", "05-11", "05-12", "05-13", "05-14", "05-15", "05-18", "05-19", "05-20", "05-21", "05-22", "05-26", "05-27", "05-28", "05-29", "06-01", "06-02", "06-04", "06-05", "06-06"],datasets:[{label:'달러인덱스',data:[98.02,98.25,97.84,97.94,98.29,98.48,98.88,99.27,98.97,99.3,99.11,99.19,99.32,99.17,99.21,99.02,98.91,99.2,99.22,99.22,99.402,100.07],borderColor:'#a78bfa',backgroundColor:'#a78bfa18',borderWidth:2,pointRadius:2,pointHoverRadius:5,tension:0.3,fill:true}]},
   options:{
     responsive:true,
     plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`포인트: ${ctx.parsed.y?.toLocaleString()??'-'}`}}},
