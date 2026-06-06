@@ -101,6 +101,7 @@ lines = [
     f"  {'美 30년물(%)':<17} {fv(us30y,3):>11}  {arrow(us30y_chg)} {fc(us30y_chg):>8}",
     SEP,
     f"  ※ 기준: 전일 종가  |  생성: {KST_NOW.strftime('%Y-%m-%d %H:%M')} KST",
+    f"\n📈 대시보드: https://neon-liger-ccc963.netlify.app/",
 ]
 report = "\n".join(lines)
 print(report)
