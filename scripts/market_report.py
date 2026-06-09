@@ -84,9 +84,13 @@ def fetch_kr_market(index_code):
 
 def fmt_val(v):
     """Format value for chart data array"""
-    if v is None: return 'null'
-    if v == int(v) and abs(v) < 1e9:
-        return str(int(v))
+    import math
+    if v is None or (isinstance(v, float) and math.isnan(v)): return 'null'
+    try:
+        if v == int(v) and abs(v) < 1e9:
+            return str(int(v))
+    except (OverflowError, ValueError):
+        pass
     return f'{v:.4f}'.rstrip('0').rstrip('.')
 
 
@@ -157,7 +161,9 @@ def add_notion_record():
         return
 
     def num(v):
-        return {"number": round(v, 4)} if v is not None else None
+        import math
+        if v is None or (isinstance(v, float) and math.isnan(v)): return None
+        return {"number": round(float(v), 4)}
 
     def sel(chg):
         return {"select": {"name": "▲상승" if chg is not None and chg > 0 else "▼하락"}}
@@ -326,7 +332,11 @@ us30_prev,   us30y,   us30y_chg  = fetch_yf("^TYX")
 kospi_vol  = fetch_kr_market("KOSPI")
 kosdaq_vol = fetch_kr_market("KOSDAQ")
 
-add_notion_record()
+try:
+    add_notion_record()
+except Exception as e:
+    print(f"Notion skipped due to error: {e}")
+
 update_dashboard({
     'c_kospi':  kospi,
     'c_kosdaq': kosdaq,
